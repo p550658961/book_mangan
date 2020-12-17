@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--  导入mysql的连接配置  -->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!--  配置数据源  -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--  配置SqlSessionFactory工厂  -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--  指定数据源  -->
+        <property name="dataSource" ref="dataSource"/>
+        <!--  指定mybatis的主配置文件   -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--  指定局部xml的配置文件 -->
+        <property name="mapperLocations" value="classpath:com/dao/*.xml"/>
+    </bean>
+
+    <!-- 扫描dao层接口中的方法，并且将其与对应的xml文件关联起来 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.dao"/>
+    </bean>
+
+
+    <!-- aop添加事务处理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+
+    <!-- 权限管理 -->
+    <bean id="hashedCredentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashIterations" value="1024"/>
+        <property name="hashAlgorithmName" value="md5"/>
+    </bean>
+    <bean id="customRealm" class="com.ream.CustomRealm">
+        <property name="credentialsMatcher" ref="hashedCredentialsMatcher"/>
+    </bean>
+    <!-- 安全管理器  ref对象-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="customRealm"/>
+    </bean>
+    <!-- shiro filter -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 安全管理器必须的 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 身份认证失败   认证提交的地址 -->
+        <property name="loginUrl" value="/login/international"/>
+        <!-- 权限认证失败    没有权限认证提交的地址 -->
+        <!--        <property name="unauthorizedUrl" value="/unauthorized.jsp"/>-->
+
+        <!-- Shiro连接约束配置,即过滤链的定义 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- 对静态资源设置匿名访问 -->
+                /login/loginAdmin = anon <!-- 放行后台登录验证 -->
+                /static/** = anon <!-- 放行静态资源 -->
+                /login/checkCode = anon <!-- 放行验证码 -->
+                <!-- /** = authc 所有url都必须认证通过才可以访问 -->
+                /** = authc
+            </value>
+        </property>
+    </bean>
+    <!-- Shiro生命周期处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+</beans>

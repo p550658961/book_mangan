@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.BorrowDao">
+    <select id="findByNameNumber" resultType="com.domain.Student">
+        select * from student where name = #{name} and number = #{number}
+    </select>
+
+    <select id="findByBookNameAuthor" resultMap="BookInfo">
+        select * from bookInfo where book_name = #{bookName} and author = #{author}
+    </select>
+
+    <resultMap id="BookInfo" type="com.domain.BookInfo">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="book_name" property="bookName"/>
+        <result column="author" property="author"/>
+        <result column="count" property="count"/>
+        <result column="new_time" property="newTime"/>
+        <result column="publishing" property="publishing"/>
+        <result column="borrow" property="borrow"/>
+    </resultMap>
+
+    <update id="updateBookInfo">
+        UPDATE bookInfo SET `count` = `count`-1,borrow = borrow + 1 WHERE id = #{id}
+    </update>
+    
+    <insert id="insertBorrow" parameterType="com.domain.Borrow">
+        INSERT INTO borrowInfo(student_id,book_id,borrow_book_date,return_book_date,due_date,STATUS)
+        values (#{studentId},#{bookId},#{borrowBookDate},#{returnBookDate},#{dueDate},"未还")
+    </insert>
+    
+    <select id="findDimAll" resultMap="borrowAll">
+        SELECT s.name,s.classes,s.number,bi.id,bi.borrow_book_date,bi.return_book_date,bi.due_date,
+        bi.status,b.book_name,b.author
+        FROM student s INNER JOIN borrowInfo bi ON s.id = bi.student_id
+        INNER JOIN bookinfo b ON b.id = bi.book_id
+        WHERE s.name LIKE "%"#{name}"%" AND b.book_name LIKE "%"#{bookName}"%" AND bi.status like "%"#{status}"%"
+    </select>
+
+    <resultMap id="borrowAll" type="com.domain.Borrow">
+        <result column="id" property="id"/>
+        <result column="borrow_book_date" property="borrowBookDate"/>
+        <result column="return_book_date" property="returnBookDate"/>
+        <result column="due_date" property="dueDate"/>
+        <result column="status" property="status"/>
+        <association property="student" javaType="com.domain.Student">
+            <result column="name" property="name"/>
+            <result column="number" property="number"/>
+            <result column="classes" property="classes"/>
+        </association>
+        <association property="bookInfo" javaType="com.domain.BookInfo">
+            <result column="book_name" property="bookName"/>
+            <result column="author" property="author"/>
+        </association>
+    </resultMap>
+
+    <update id="updateBorrow">
+        update borrowInfo set return_book_date = #{returnBookDate},status = "已还" where id = #{id}
+    </update>
+
+    <update id="updateBookInfo2">
+        UPDATE bookInfo SET `count` = `count`+1,borrow = borrow-1 WHERE id = #{id}
+    </update>
+
+    <select id="findOverDue" resultType="map" parameterType="java.util.Date">
+        SELECT s.name,s.classes,s.number,bi.due_date,
+        b.book_name,b.author
+        FROM student s INNER JOIN borrowInfo bi ON s.id = bi.student_id
+        INNER JOIN bookinfo b ON b.id = bi.book_id
+        WHERE bi.due_date &lt; #{date} AND bi.status = "未还"
+    </select>
+
+    <update id="updateBorrowBookTime">
+        update borrowInfo set borrow_book_date = #{borrowBookDate},due_date = #{dueDate} where id = #{id}
+    </update>
+</mapper>

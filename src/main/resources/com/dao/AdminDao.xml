@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.AdminDao">
+
+    <insert id="insertAdministrator" parameterType="com.domain.Administrator">
+        INSERT INTO administrator(username,password,salt,create_date,rid)
+        VALUES(#{username},#{password},#{salt},#{createDate},#{rid})
+    </insert>
+
+    <select id="findAll" resultMap="AdminRole">
+        SELECT a.*,r.name FROM administrator a INNER JOIN role r ON a.rid = r.id
+    </select>
+
+    <resultMap id="AdminRole" type="com.domain.Administrator">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="createDate" column="create_date"/>
+        <result property="rid" column="rid"/>
+        <association property="role" javaType="com.domain.Role">
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <delete id="deleteAdminById">
+        DELETE FROM administrator WHERE id = #{id}
+    </delete>
+
+</mapper>

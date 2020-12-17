@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.BookDao">
+
+    <select id="findBookType" resultMap="bookType">
+        select * from bookType
+    </select>
+
+    <resultMap id="bookType" type="com.domain.BookType">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+    <insert id="insertBookInfo" parameterType="com.domain.BookInfo">
+        insert into bookInfo(type_id,book_name,author,count,new_time,publishing,borrow,total)
+        values(#{typeId},#{bookName},#{author},#{count},#{newTime},#{publishing},0,#{count})
+    </insert>
+
+    <select id="findBookInfo" resultMap="BookInfoAndBookType">
+        SELECT bi.*,bt.type FROM bookinfo bi
+        INNER JOIN booktype bt ON bi.type_id=bt.type_id
+        <where>
+            <if test="bookName !=null">
+                bi.book_name LIKE "%"#{bookName}"%"
+            </if>
+            <if test="type != null">
+                AND bt.type LIKE "%"#{type}"%"
+            </if>
+        </where>
+    </select>
+
+    <resultMap type="com.domain.BookInfo" id="BookInfoAndBookType">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="book_name" property="bookName"/>
+        <result column="author" property="author"/>
+        <result column="count" property="count"/>
+        <result column="new_time" property="newTime"/>
+        <result column="publishing" property="publishing"/>
+        <result column="borrow" property="borrow"/>
+        <result column="total" property="total"/>
+        <association property="bookType" javaType="com.domain.BookType">
+            <result column="type" property="type"/>
+        </association>
+    </resultMap>
+
+    <delete id="deleteById">
+        delete from bookInfo where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BookInfoAndBookType">
+        select * from bookInfo where id = #{id}
+    </select>
+
+    <update id="updateById">
+        update bookInfo set total = #{total},count = #{total} - borrow where id = #{id}
+    </update>
+</mapper>

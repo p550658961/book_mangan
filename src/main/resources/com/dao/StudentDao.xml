@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.StudentDao">
+
+    <insert id="insertStudentInfo" parameterType="com.domain.Student">
+        INSERT INTO student(name,number,grade,classes,gender)
+        VALUES(#{name},#{number},#{grade},#{classes},#{gender})
+    </insert>
+
+    <select id="findStudentNumber" resultType="String">
+        select number from student
+    </select>
+
+
+    <select id="findByNameOrClasses" resultType="com.domain.Student">
+        select * from student
+        <where>
+            <if test="name!=null">
+                name LIKE "%"#{name}"%"
+            </if>
+            <if test="classes!=null">
+                AND classes LIKE "%"#{classes}"%"
+            </if>
+        </where>
+    </select>
+
+    <delete id="byIdDeleteStudent">
+        delete from student where id = #{id}
+    </delete>
+
+
+    <delete id="deleteStudentIds">
+        delete from student where id in
+        <foreach collection="list" item="ids" open="("
+                 separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+</mapper>
