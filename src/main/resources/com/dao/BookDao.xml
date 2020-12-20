@@ -6,7 +6,7 @@
 <mapper namespace="com.dao.BookDao">
 
     <select id="findBookType" resultMap="bookType">
-        select * from bookType
+        select * from booktype
     </select>
 
     <resultMap id="bookType" type="com.domain.BookType">
@@ -16,7 +16,7 @@
     </resultMap>
 
     <insert id="insertBookInfo" parameterType="com.domain.BookInfo">
-        insert into bookInfo(type_id,book_name,author,count,new_time,publishing,borrow,total)
+        insert into bookinfo(type_id,book_name,author,count,new_time,publishing,borrow,total)
         values(#{typeId},#{bookName},#{author},#{count},#{newTime},#{publishing},0,#{count})
     </insert>
 
@@ -49,14 +49,14 @@
     </resultMap>
 
     <delete id="deleteById">
-        delete from bookInfo where id = #{id}
+        delete from bookinfo where id = #{id}
     </delete>
 
     <select id="findById" resultMap="BookInfoAndBookType">
-        select * from bookInfo where id = #{id}
+        select * from bookinfo where id = #{id}
     </select>
 
     <update id="updateById">
-        update bookInfo set total = #{total},count = #{total} - borrow where id = #{id}
+        update bookinfo set total = #{total},count = #{total} - borrow where id = #{id}
     </update>
 </mapper>

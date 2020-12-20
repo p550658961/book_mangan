@@ -9,7 +9,7 @@
     </select>
 
     <select id="findByBookNameAuthor" resultMap="BookInfo">
-        select * from bookInfo where book_name = #{bookName} and author = #{author}
+        select * from bookinfo where book_name = #{bookName} and author = #{author}
     </select>
 
     <resultMap id="BookInfo" type="com.domain.BookInfo">
@@ -24,18 +24,18 @@
     </resultMap>
 
     <update id="updateBookInfo">
-        UPDATE bookInfo SET `count` = `count`-1,borrow = borrow + 1 WHERE id = #{id}
+        UPDATE bookinfo SET `count` = `count`-1,borrow = borrow + 1 WHERE id = #{id}
     </update>
     
     <insert id="insertBorrow" parameterType="com.domain.Borrow">
-        INSERT INTO borrowInfo(student_id,book_id,borrow_book_date,return_book_date,due_date,STATUS)
+        INSERT INTO borrowinfo(student_id,book_id,borrow_book_date,return_book_date,due_date,status)
         values (#{studentId},#{bookId},#{borrowBookDate},#{returnBookDate},#{dueDate},"未还")
     </insert>
     
     <select id="findDimAll" resultMap="borrowAll">
         SELECT s.name,s.classes,s.number,bi.id,bi.borrow_book_date,bi.return_book_date,bi.due_date,
         bi.status,b.book_name,b.author
-        FROM student s INNER JOIN borrowInfo bi ON s.id = bi.student_id
+        FROM student s INNER JOIN borrowinfo bi ON s.id = bi.student_id
         INNER JOIN bookinfo b ON b.id = bi.book_id
         WHERE s.name LIKE "%"#{name}"%" AND b.book_name LIKE "%"#{bookName}"%" AND bi.status like "%"#{status}"%"
     </select>
@@ -58,22 +58,22 @@
     </resultMap>
 
     <update id="updateBorrow">
-        update borrowInfo set return_book_date = #{returnBookDate},status = "已还" where id = #{id}
+        update borrowinfo set return_book_date = #{returnBookDate},status = "已还" where id = #{id}
     </update>
 
     <update id="updateBookInfo2">
-        UPDATE bookInfo SET `count` = `count`+1,borrow = borrow-1 WHERE id = #{id}
+        UPDATE bookinfo SET `count` = `count`+1,borrow = borrow-1 WHERE id = #{id}
     </update>
 
     <select id="findOverDue" resultType="map" parameterType="java.util.Date">
         SELECT s.name,s.classes,s.number,bi.due_date,
         b.book_name,b.author
-        FROM student s INNER JOIN borrowInfo bi ON s.id = bi.student_id
+        FROM student s INNER JOIN borrowinfo bi ON s.id = bi.student_id
         INNER JOIN bookinfo b ON b.id = bi.book_id
         WHERE bi.due_date &lt; #{date} AND bi.status = "未还"
     </select>
 
     <update id="updateBorrowBookTime">
-        update borrowInfo set borrow_book_date = #{borrowBookDate},due_date = #{dueDate} where id = #{id}
+        update borrowinfo set borrow_book_date = #{borrowBookDate},due_date = #{dueDate} where id = #{id}
     </update>
 </mapper>

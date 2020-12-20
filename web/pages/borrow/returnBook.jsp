@@ -119,7 +119,7 @@
 
     function to_dimPage(pn){
         $.ajax({
-            url:"<%=basePath%>/borrow/showReturnBook",
+            url:"<%=basePath%>/borrow/showAllInfo",
             type:"get",
             data:{"pn":pn,"name":$("#name").val()},
             success:function (result) {

@@ -41,7 +41,7 @@ public class BorrowController {
     }
 
     /**
-     * 借阅记录分页模糊查询
+     * 归还图书和借阅记录二合一的分页展示
      * @param pn
      * @param name
      * @param bookName
@@ -55,32 +55,18 @@ public class BorrowController {
         // 在查询之前需要调用,传入页码，以及每页大小
         PageHelper.startPage(pn, 8);
         // startPage后面紧跟的这个查询就是一个分页查询
-        List<Borrow> borrows = borrowService.findDimAll(name,bookName,status);
+        List<Borrow> borrows;
+        if (bookName == null && status == null){
+            borrows = borrowService.findDimAll(name,"","未还");
+        }else{
+            borrows = borrowService.findDimAll(name,bookName,status);
+        }
         // 使用pageInfo包装查询后的结果
         // 封装了详细的分页信息，包括有我们查询出来的数据，传入连续显示的页数
         PageInfo page = new PageInfo(borrows, 8);
         return page;
     }
 
-    /**
-     * 归还图书，分页展示
-     * @param pn
-     * @param name
-     * @return
-     */
-    @RequestMapping("/showReturnBook")
-    @ResponseBody
-    public PageInfo<Borrow> showReturnBook(@RequestParam(value = "pn",defaultValue = "1") Integer pn,String name){
-        // 引入PageHelper分页插件
-        // 在查询之前需要调用,传入页码，以及每页大小
-        PageHelper.startPage(pn, 8);
-        // startPage后面紧跟的这个查询就是一个分页查询
-        List<Borrow> borrows = borrowService.findDimAll(name,"","未还");
-        // 使用pageInfo包装查询后的结果
-        // 封装了详细的分页信息，包括有我们查询出来的数据，传入连续显示的页数
-        PageInfo page = new PageInfo(borrows, 8);
-        return page;
-    }
 
     /**
      * 归还图书

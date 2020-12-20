@@ -89,6 +89,7 @@ public class BookController {
     @RequestMapping("/updateBookInfo")
     @ResponseBody
     public int updateById(Integer id,Integer total){
+        // 图书总数不能小于0
         if (total <0){
             return -1;
         }

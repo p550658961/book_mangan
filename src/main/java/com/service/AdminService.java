@@ -22,7 +22,7 @@ public interface AdminService {
     int insertAdministrator(Administrator administrator);
 
     /**
-     * 所有管理员信息
+     * 查询所有管理员信息
      * @return
      */
     List<Administrator> findAll();

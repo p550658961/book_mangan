@@ -42,9 +42,11 @@ public class AdminController {
     @RequestMapping("/addAdmin")
     @ResponseBody
     public int addAdmin(Administrator administrator){
+        // 判断用户名是否为空
         if (administrator.getUsername().length()<=0){
             return -1;
         }
+        // 判断密码是否为空
         if (administrator.getPassword().length()<=0){
             return -2;
         }
