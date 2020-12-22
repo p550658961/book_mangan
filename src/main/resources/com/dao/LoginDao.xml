@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dao.LoginDao">
-    <select id="findByRoleName" resultMap="RoleName" parameterType="String">
+    <cache type="com.utils.RedisCache"/>
+    <select id="findByRoleName" resultMap="RoleName" parameterType="String" useCache="true">
         SELECT a.*,r.name FROM administrator a INNER JOIN role r ON a.rid = r.id
         where username = #{username}
     </select>

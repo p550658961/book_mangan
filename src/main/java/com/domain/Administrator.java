@@ -2,9 +2,10 @@ package com.domain;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Administrator{
+public class Administrator implements Serializable {
     private Integer id;
     @NotEmpty
     private String username;

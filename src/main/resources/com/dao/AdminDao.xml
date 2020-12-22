@@ -5,12 +5,14 @@
 
 <mapper namespace="com.dao.AdminDao">
 
+    <cache type="com.utils.RedisCache"></cache>
+
     <insert id="insertAdministrator" parameterType="com.domain.Administrator">
         INSERT INTO administrator(username,password,salt,create_date,rid)
         VALUES(#{username},#{password},#{salt},#{createDate},#{rid})
     </insert>
 
-    <select id="findAll" resultMap="AdminRole">
+    <select id="findAll" resultMap="AdminRole" useCache="true">
         SELECT a.*,r.name FROM administrator a INNER JOIN role r ON a.rid = r.id
     </select>
 

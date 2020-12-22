@@ -2,7 +2,7 @@ package com.ream;
 
 import com.domain.Administrator;
 import com.service.LoginService;
-import com.utils.MyByteSource;
+import com.domain.MyByteSource;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

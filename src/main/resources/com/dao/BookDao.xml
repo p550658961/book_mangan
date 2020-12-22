@@ -4,8 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dao.BookDao">
+    <cache type="com.utils.RedisCache"></cache>
 
-    <select id="findBookType" resultMap="bookType">
+    <select id="findBookType" resultMap="bookType" useCache="true">
         select * from booktype
     </select>
 
@@ -20,7 +21,7 @@
         values(#{typeId},#{bookName},#{author},#{count},#{newTime},#{publishing},0,#{count})
     </insert>
 
-    <select id="findBookInfo" resultMap="BookInfoAndBookType">
+    <select id="findBookInfo" resultMap="BookInfoAndBookType" useCache="true">
         SELECT bi.*,bt.type FROM bookinfo bi
         INNER JOIN booktype bt ON bi.type_id=bt.type_id
         <where>

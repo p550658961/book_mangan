@@ -1,8 +1,9 @@
 package com.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Borrow {
+public class Borrow implements Serializable {
     private Integer id;
     private Integer studentId;
     private Integer bookId;

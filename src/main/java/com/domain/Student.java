@@ -4,8 +4,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-public class Student {
+public class Student implements Serializable {
 
     private Integer id;
     @NotEmpty

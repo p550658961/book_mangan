@@ -1,4 +1,4 @@
-package com.utils;
+package com.domain;
 
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.CodecSupport;

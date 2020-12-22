@@ -1,9 +1,10 @@
 package com.domain;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BookInfo {
+public class BookInfo implements Serializable {
 
     private Integer id;
     private Integer typeId;

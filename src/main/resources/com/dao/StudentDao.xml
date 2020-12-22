@@ -5,17 +5,18 @@
 
 <mapper namespace="com.dao.StudentDao">
 
+    <cache type="com.utils.RedisCache"/>
     <insert id="insertStudentInfo" parameterType="com.domain.Student">
         INSERT INTO student(name,number,grade,classes,gender)
         VALUES(#{name},#{number},#{grade},#{classes},#{gender})
     </insert>
 
-    <select id="findStudentNumber" resultType="String">
+    <select id="findStudentNumber" resultType="String" useCache="true">
         select number from student
     </select>
 
 
-    <select id="findByNameOrClasses" resultType="com.domain.Student">
+    <select id="findByNameOrClasses" resultType="com.domain.Student" useCache="true">
         select * from student
         <where>
             <if test="name!=null">

@@ -4,11 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dao.BorrowDao">
+
+    <cache type="com.utils.RedisCache"/>
     <select id="findByNameNumber" resultType="com.domain.Student">
         select * from student where name = #{name} and number = #{number}
     </select>
 
-    <select id="findByBookNameAuthor" resultMap="BookInfo">
+    <select id="findByBookNameAuthor" resultMap="BookInfo" useCache="true">
         select * from bookinfo where book_name = #{bookName} and author = #{author}
     </select>
 
@@ -32,7 +34,7 @@
         values (#{studentId},#{bookId},#{borrowBookDate},#{returnBookDate},#{dueDate},"未还")
     </insert>
     
-    <select id="findDimAll" resultMap="borrowAll">
+    <select id="findDimAll" resultMap="borrowAll" useCache="true">
         SELECT s.name,s.classes,s.number,bi.id,bi.borrow_book_date,bi.return_book_date,bi.due_date,
         bi.status,b.book_name,b.author
         FROM student s INNER JOIN borrowinfo bi ON s.id = bi.student_id
@@ -65,7 +67,7 @@
         UPDATE bookinfo SET `count` = `count`+1,borrow = borrow-1 WHERE id = #{id}
     </update>
 
-    <select id="findOverDue" resultType="map" parameterType="java.util.Date">
+    <select id="findOverDue" resultType="map" parameterType="java.util.Date" useCache="true">
         SELECT s.name,s.classes,s.number,bi.due_date,
         b.book_name,b.author
         FROM student s INNER JOIN borrowinfo bi ON s.id = bi.student_id

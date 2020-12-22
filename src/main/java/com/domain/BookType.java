@@ -1,6 +1,8 @@
 package com.domain;
 
-public class BookType {
+import java.io.Serializable;
+
+public class BookType implements Serializable {
 
     private Integer id;
     private Integer typeId;
